@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+    <meta charset="utf-8">
+    <link rel="icon" href="{{ url_for('static', filename='flower.ico') }}">
+    {%if current_user.is_authenticated %}
+        <title>{{ current_user.username }}'s Watchlist</title>
+        <h2>{{ current_user.username }}'s Watchlist</h2>
+    {% else %}
+        <title>Watchlist</title>
+        <h2>请登录</h2>
+    {% endif %}
+    <!-- 插入到页面标题上方 -->
+    {% for message in get_flashed_messages() %}
+         <div class="alert">{{ message }}</div>
+    {% endfor %}
+    <h2>福州</h2>
+    <h3>{{temperature}} </h3><h4>{{ info }}</h4>
+    
+     <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            {% if current_user.is_authenticated %}
+                   <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+               <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    {% endblock %}
+    <footer>
+        <small>&copy; 2018 <a href="http://helloflask.com/tutorial">HelloFlask</a></small>
+    </footer>
+</body>
+</html>

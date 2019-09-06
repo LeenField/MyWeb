@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>编辑电影</h1>
+<form method="POST">
+    <h2>电影标题</h2><br>
+    <input type="text" value="{{ movie.title }}" name="title" pattern="^\w{1,20}" required>
+    <h2>电影年份</h2>
+    <input type="text" value="{{ movie.year }}" name="year" pattern="\d{4}" required>
+    <input class="btn" type="submit" name="提交" value="Update">
+</form>
+{% endblock %}
