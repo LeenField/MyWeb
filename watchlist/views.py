@@ -3,8 +3,6 @@ from flask import Flask, render_template, url_for, flash, request, redirect
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
 import re
 from watchlist import app, db
-from urllib.parse import urlencode, quote
-import requests
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -107,16 +105,7 @@ def login():
 @app.route('/', methods=["GET", "POST"])
 def index():
     # name = User.query.first()
-    query_key = {'city': "福州".encode("utf-8"), 'key': '7b4a753f47383e4b65594b2f96ca20e3'.encode("utf-8")}
-    # 注意城市名的编码问题
-    weather = requests.get("http://apis.juhe.cn/simpleWeather/query", urlencode(query_key))
-    # weather = requests.get("http://apis.juhe.cn/simpleWeather/query/get?city=%E7%A6%8F%E5%B7%9E&key=7b4a753f47383e4b65594b2f96ca20e3")
-    print(weather.text)
-    data = weather.json()
-    temperature, info = None, None
-    if data['reason'] == "查询成功!":
-        temperature = data['result']['realtime']['temperature']
-        info = data['result']['realtime']['info']
+
     if request.method == "POST":
         title = request.form["title"]
         year  = request.form["year"]
@@ -125,6 +114,6 @@ def index():
         db.session.commit()
         flash("添加电影成功")
     movies = Movie.query.all()
-    return render_template('index.html', movies=movies, temperature = temperature, info = info)
+    return render_template('index.html', movies=movies)
 
 

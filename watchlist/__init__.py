@@ -2,6 +2,8 @@ from flask import Flask, render_template, url_for, flash, request, redirect
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 # from watchlist.models import User, Movie
+import requests
+from urllib.parse import urlencode, quote
 import os
 import sys
 
@@ -39,6 +41,18 @@ def load_user(user_id):  # 创建用户加载回调函数，接受用户 ID 作�
 def inject_user():  # 函数名可以随意修改
     from watchlist.models import User             
     user = User.query.first()
-    return dict(user=user)  # 需要返回字典，等同于return {'user': user}
+
+    query_key = {'city': "福州".encode("utf-8"), 'key': '7b4a753f47383e4b65594b2f96ca20e3'.encode("utf-8")}
+    # 注意城市名的编码问题
+    weather = requests.get("http://apis.juhe.cn/simpleWeather/query", urlencode(query_key))
+    # weather = requests.get("http://apis.juhe.cn/simpleWeather/query/get?city=%E7%A6%8F%E5%B7%9E&key=7b4a753f47383e4b65594b2f96ca20e3")
+    print(weather.text)
+    data = weather.json()
+    temperature, info = None, None
+    if data['reason'] == "查询成功!":
+        temperature = data['result']['realtime']['temperature']
+        info = data['result']['realtime']['info']
+
+    return dict(user=user, temperature = temperature, info = info)  # 需要返回字典，等同于return {'user': user}
 
 from watchlist import views, errors
