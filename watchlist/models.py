@@ -2,7 +2,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
 from watchlist import app, db
 
-class User(db.Model, UserMixin):  # 表名将会是 user（自动生成，小写处理） 继承Flask-login 的UserMixin类
+class User(db.Model, UserMixin):  # 默认表名将会是 user（自动生成，小写处理） 继承Flask-login 的UserMixin类
+    # 定义表名（复数）
+    # __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)  # 主键
     # name = db.Column(db.String(20))  # 名字
     username = db.Column(db.String(20))  # 用户名
@@ -15,6 +17,8 @@ class User(db.Model, UserMixin):  # 表名将会是 user（自动生成，小写
         return check_password_hash(self.password_hash, password)  # 返回布尔值
 
 class Movie(db.Model):  # 表名将会是 movie
+    # __tablename__ = 'movies'
+    
     id = db.Column(db.Integer, primary_key=True)  # 主键
     title = db.Column(db.String(60))  # 电影标题
     year = db.Column(db.String(4))  # 电影年份
