@@ -1,0 +1,78 @@
+        /*所有选项联动*/
+        .checkchoose {
+            padding: 10px 20px;
+        }   
+
+
+        /*勾选框*/ 
+        .checkbox-box {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 10px;
+            position: relative;
+            border: 2px solid orangered;
+            opacity: 0.6;
+            vertical-align: middle;
+        }   
+
+
+
+        /*框框*/  
+        .checkbox-box input {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .checkbox-box input:hover {
+            cursor: pointer;
+        }
+        /*勾勾*/
+        .checkbox-box span {
+            position: absolute;
+            top: -7px;
+            right: 1px;
+            font-size: 25px;
+            font-weight: bold;
+            font-family: Arial;
+            -webkit-transform: rotate(30deg);
+            transform: rotate(30deg);
+            /*旋转√*/
+            color: orangered;
+        }
+        /*选项文字*/
+        label {
+            font-size: 14px;
+            color: #000;
+        }
+        /*选项间的距离*/
+        .wrapper {
+            margin-bottom: 10px;
+        }
+        /*兄弟选择器 ！important*/
+        .checkbox-box input[type="checkbox"]+span {
+            opacity: 0;
+        }
+
+        .checkbox-box input[type="checkbox"]:checked+span {
+            opacity: 1;
+        }
+.title input, #Login input, #SignIn input{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 620px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: "Microsoft soft";
+}
+.title input:focus, #Login input:focus, #SignIn input:focus{
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+}

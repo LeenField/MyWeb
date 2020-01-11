@@ -1,7 +1,8 @@
 /* 页面整体 */
 body {
-    margin: auto;
-    max-width: 580px;
+    /* 避免被editormd覆盖 */
+    margin: auto;    
+    max-width: 80%;
     font-size: 14px;
     font-family: Helvetica, Arial, sans-serif;
 }
@@ -35,9 +36,9 @@ footer {
     border-radius: 5px;
 }
 /* 提交按钮隐藏 */
-input[type="text"]:invalid ~ input[type="submit"]{
-    display: none;
-}
+/* input[type="text"]:invalid ~ input[type="submit"]{
+    display: auto;
+} */
 /* 电影列表 */
 .movie-list {
     list-style-type: none;
@@ -100,10 +101,11 @@ input[type="text"]:invalid ~ input[type="submit"]{
     background: #F5C518;
     border-radius: 5px;
     padding: 4px 5px;
-    margin-top: 5px;
+    margin: 1px 5px;
+    float: left;
 }
 /* 导航栏 */
-nav ul {
+#head_nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -111,11 +113,11 @@ nav ul {
     background-color: #333;
 }
 
-nav li {
+#head_nav li {
     float: left;
 }
 
-nav li a {
+#head_nav li a {
     display: block;
     color: white;
     text-align: center;
@@ -123,6 +125,6 @@ nav li a {
     text-decoration: none;
 }
 
-nav li a:hover {
+#head_nav li a:hover {
     background-color: #111;
 }
