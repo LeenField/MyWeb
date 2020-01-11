@@ -61,7 +61,8 @@ def register():
     # db.drop_all()
     # db.create_all()       # 只有在数据库模型修改时使用
     if request.method == 'POST':
-        user_name = request.form['username']
+        # user_name = request.form['username']
+        user_name = request.args.get('username', "DefaultName")  # 第二个为默认值
         passport = request.form['passport']
         passport_check = request.form['passport-check']
         name_pattern = re.compile(r"\w{4,8}")    # 逗号后面不需要空格
