@@ -1,0 +1,20 @@
+{% extends 'admin/master.html' %}   #为了保持一致，继承admin/master.html模板
+
+{% block body %}
+
+{{ super() }}
+
+{% if current_user.is_authenticated %}
+
+<h2>
+    欢迎来到后台管理系统！
+</h2>
+{% else %}
+<href src="{{ url_for('login') }}">
+<h2>
+    请登录(找到XieCK)
+</h2>
+</href>
+{{ link | safe }}
+{% endif %}
+{% endblock body %}
