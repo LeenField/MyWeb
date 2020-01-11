@@ -5,3 +5,5 @@ __pycache__
 .env
 *.db
 *.sql
+.vscode/extensions.json
+.vscode/launch.json
