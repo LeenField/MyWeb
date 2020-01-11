@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="../static/editormd/css/editormd.css" />
+<link rel="stylesheet" href="../static/editormd/examples/css/style.css" />
+<link rel="stylesheet" href="../static/css/article_add.css" />
+ 
+<script src=" ../static/editormd/examples/js/jquery.min.js"> </script> 
+<script src="../static/editormd/editormd.js"></script>
+
+<form method="POST" action="{{ url_for("article_add")}} ">
+    {{ form.csrftoken }}
+    <div class="title" style="margin: 10px 0px;">
+        <h2 style="display: inline; margin-right: 10px;">
+            文章标题</h2>
+        <!-- <input type="text" name="title" required> -->
+        <div style="display: inline-block;">{{ form.title.lable }}{{form.title()}}
+            </div>
+    </div>
+    <div>
+    <h2 style="display: inline; margin-right: 45px;">标签</h2>
+    {% for tag in candidate_tags %}
+    <input name="{{ tag.tag_name }}" type="checkbox" id="check{{ loop.index }}"/>
+    <label for="check{{ loop.index }}" style="font-size: 15px;">
+        {{tag.tag_name}}
+    </label>
+    {% endfor %}
+    </div>
+
+    <h2>正文</h2>
+    <div class="editormd" id="test-editormd">
+             {{ form.body.lable }}{{ form.body() | safe }}
+        <textarea class="editormd-markdown-textarea"
+             name="test-editormd-markdown-doc">
+        </textarea>
+         <!-- </textarea> -->
+        <!-- 第二个隐藏文本域，用来构造生成的HTML代码，方便表单POST提交，这里的name可以任意取，后    
+            台接受时以这个name键为准 -->
+        <textarea class="editormd-html-textarea"
+              id="editorhtml">
+        </textarea>
+    </div>
+    <input class="btn" type="submit" name="submit" value="保存" style="margin: auto;">
+    <input name="box_draft" type="checkbox" id="check_draft" checked=true/>
+    <label for="check_draft" style="font-size: 14px;">存为草稿</label>
+</form>
+
+<script type="text/javascript">
+    var testEditor;
+
+    $(function () {
+        testEditor = editormd("test-editormd", {
+            placeholder: "请输入要发布的内容...",//这里不设置则为默认的
+            width: "90%",
+            height: 640,
+            syncScrolling: "single",
+            path: "../static/editormd/lib/",//lib路径
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "{{ url_for('.upload') }}",//图片上传请求Url
+            saveHTMLToTextarea: true,//保存html到textarea
+            emoji: true,
+            taskList: true,
+            tocm: true,         // Using [TOCM]
+            tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart: true,             // 开启流程图支持，默认关闭
+            sequenceDiagram: true,// 开启时序/序列图支持，默认关闭  
+            //下面这一行将使用dark主题
+            // previewTheme : "dark"
+
+            //editor.md期望得到一个json格式的上传后的返回值，格式是这样的：
+            /*
+             {
+             success : 0 | 1,           // 0 表示上传失败，1 表示上传成功
+             message : "提示的信息，上传成功或上传失败及错误信息等。",
+             url     : "图片地址"        // 上传成功时才返回
+             }
+             */
+        });
+    });
+</script>
+{% endblock%}

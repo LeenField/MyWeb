@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- <p>{{ movies|length }} Titles</p> -->
+<!-- <p>{{ articles }} articles</p> -->
+
+<!-- 在模板中可以直接使用 current_user 变量 -->
+<!-- {% if current_user.is_authenticated %}
+<form method="post">
+    Name <input type="text" name="title" autocomplete="off" required>
+    Year <input type="text" name="year" autocomplete="off" required>
+    <input class="btn" type="submit" name="submit" value="Add">
+</form>
+{% endif %} -->
+
+<!-- <link href="{{ url_for('static', filename='../static/editormd/css/editormd.preview.min.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='../static/editormd/css/editormd.css') }}" rel="stylesheet" /> -->
+<!--以下是js部分 -->
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/marked.min.js') }}"></script>
+-->
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/editormd.min.js') }}"></script> -->
+<link rel="stylesheet" href="../static/editormd/css/editormd.css" />
+<link rel="stylesheet" href="../static/editormd/examples/css/style.css" />
+<link rel="stylesheet" href="../static/css/article_add.css" />
+
+<script src=" ../static/editormd/examples/js/jquery.min.js"> </script> 
+<script src="../static/editormd/lib/flowchart.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/prettify.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/jquery.flowchart.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/raphael.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/underscore.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/sequence-diagram.min.js') }}"></script>
+<script src="../static/editormd/lib/marked.min.js"></script>
+<script src="../static/editormd/editormd.js"></script>
+
+<h1>{{ article.title }}</h1>
+<div>
+    {% for tag in article.tags %}
+    <div class="imdb">
+        {{ tag.tag_name }}
+    </div>
+    {% endfor %}
+    <h4 style="padding-top: 3px; margin-right: 5px;">
+        {{ article.update_time }} Updated
+    </h4>
+</div>
+<div class="content" id="fancy-content">
+    {{ article.content_html| safe}}
+</div>
+
+<!-- 文章渲染 -->
+<script>
+    var mdToHTML;
+    mdToHTML = editormd.markdownToHTML("fancy-content", {
+        htmlDecode: true,
+        // markdown: "{{article.content_html |safe|striptags}}",
+        taskList: true,
+        tex: true,
+        flowChart: true,
+        sequenceDiagram: true
+    });
+</script>
+<!-- <ul class="movie-list">
+    {% for movie in movies %}
+    <li>{{ movie.title }} - {{ movie.year }}
+        <span class="float-right">
+            <a class="imdb" href="https://www.imdb.com/find?q={{ movie.title }}" target="_blank" title="Find this movie on IMDb">IMDb</a>
+        </span>
+        {% if current_user.is_authenticated %}
+        <form class="inline-form" method="post" action="{{ url_for('delete', movie_id=movie.id) }}">
+                <a class="btn" href="{{ url_for('edit', movie_id=movie.id) }}">Edit</a>
+             <input class="btn" type="submit" name="delete" value="Delete" onclick="return confirm('Are you sure?')">
+           </form>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul> -->
+<!-- <script type="text/javascript">
+    var testEditor;
+
+    $(function () {
+        testEditor = editormd();
+    });
+</script> -->
+{% endblock %}

@@ -1,18 +1,125 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p>{{ movies|length }} Titles</p>
+<!-- <p>{{ movies|length }} Titles</p> -->
+<!-- <p>{{ articles }} articles</p> -->
 
 <!-- 在模板中可以直接使用 current_user 变量 -->
-{% if current_user.is_authenticated %}
+<!-- {% if current_user.is_authenticated %}
 <form method="post">
     Name <input type="text" name="title" autocomplete="off" required>
     Year <input type="text" name="year" autocomplete="off" required>
     <input class="btn" type="submit" name="submit" value="Add">
 </form>
-{% endif %}
+{% endif %} -->
 
-<ul class="movie-list">
+<!-- <link href="{{ url_for('static', filename='../static/editormd/css/editormd.preview.min.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='../static/editormd/css/editormd.css') }}" rel="stylesheet" /> -->
+<!--以下是js部分 -->
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/marked.min.js') }}"></script>
+-->
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/editormd.min.js') }}"></script> -->
+<link rel="stylesheet" href="../static/editormd/css/editormd.css" />
+<link rel="stylesheet" href="../static/editormd/examples/css/style.css" />
+<link rel="stylesheet" href="../static/css/article_add.css" />
+
+<script src=" ../static/editormd/examples/js/jquery.min.js"> </script>
+<script src="../static/editormd/lib/flowchart.min.js"></script>
+<script type="text/javascript"
+    src="{{ url_for('static', filename='../static/editormd/lib/prettify.min.js') }}"></script>
+<script type="text/javascript"
+    src="{{ url_for('static', filename='../static/editormd/lib/jquery.flowchart.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='../static/editormd/lib/raphael.min.js') }}"></script>
+<script type="text/javascript"
+    src="{{ url_for('static', filename='../static/editormd/lib/underscore.min.js') }}"></script>
+<script type="text/javascript"
+    src="{{ url_for('static', filename='../static/editormd/lib/sequence-diagram.min.js') }}"></script>
+<script src="../static/editormd/lib/marked.min.js"></script>
+<script src="../static/editormd/editormd.js"></script>
+
+<link rel="stylesheet" href="../static/css/article_list.css" />
+
+{% for article in articles %}
+<div id="article-{{ loop.index }}" style="margin-bottom: 5px; padding: 2px 5px; border-radius: 3px;">
+    <h1>{{ article.title }}</h1>
+    <div>
+        {% for tag in article.tags %}
+        <div class="imdb">
+            {{ tag.tag_name }}
+        </div>
+        {% endfor %}
+        <h4 style="padding-top: 3px; margin-right: 5px;">
+            {{ article.update_time }} Updated
+        </h4>
+    </div>
+    <div class="content" id="fancy-content-{{ loop.index }}">
+        {{ article.content_html|safe|truncate }}
+    </div>
+    <small style="position: relative; float: right;">
+        <a href="{{ url_for('.post', idx=article.id_article) }}">
+            Click To Read More...
+        </a></small>
+    <!-- 问章列表渲染 -->
+    <script>
+        var mdToHTML;
+        mdToHTML = editormd.markdownToHTML("fancy-content-{{ loop.index }}", {
+            htmlDecode: true,
+            // markdown: "{{article.content_html |safe|striptags}}",
+            taskList: true,
+            tex: true,
+            flowChart: true,
+            sequenceDiagram: true
+        });
+        var article_body = $('#article-{{ loop.index }}');
+        article_body.click(function () {
+            window.location.href = "{{ url_for('.post', idx=article.id_article) }}";
+        });
+        article_body.hover(
+            function () {
+                $(this).css('box-shadow', '0px 2px 2px 0px rgba(0, 0, 0, 0.3)');
+                $(this).animate({
+                    // box- shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3),
+                    opacity: 0.8
+                });
+            },
+            function () {
+                $(this).css('box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0.3)');
+                $(this).animate({
+                    opacity: 1
+                });
+            })
+    </script>
+</div>
+{% endfor %}
+<nav role="navigation_page">
+    <ul class="cd-pagination custom-buttons">
+        <li class="button">
+            {% if paginates.has_prev %}
+            <!-- <a href=url_for(".index", page={{ paginates.prev_num }}">&laquo;</a> -->
+            <a href="/?page={{ paginates.prev_num }}"></a>
+            {% endif %}
+        </li>
+        {%for i in paginates.iter_pages(left_edge=2, left_current=2, right_current=3,right_edge=2)%}
+        {% if i %}
+        <!-- <a href=url_for('.index', page={{ i }})>{{ i }}</a> -->
+            {% if i == paginates.page %}
+                <li><a class="current" href="/?page={{ i }}">{{ i }}</a></li>
+            {% else %}
+                <li><a href="/?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% else %}
+            <li class="disabled"><a href="#">&hellip;</a></li>
+        {% endif%}
+        {% endfor %}
+        <li class="button">
+            {% if paginates.has_next %}
+            <!-- <a href=url_for(".index", page={{ paginates.next_num }}">&rsquo;</a> -->
+            <a href="/?page={{ paginates.next_num }}"></a>
+            {% endif %}
+        </li>
+    </ul>
+</nav>
+<!-- <ul class="movie-list">
     {% for movie in movies %}
     <li>{{ movie.title }} - {{ movie.year }}
         <span class="float-right">
@@ -26,5 +133,12 @@
         {% endif %}
     </li>
     {% endfor %}
-</ul>
+</ul> -->
+<!-- <script type="text/javascript">
+    var testEditor;
+
+    $(function () {
+        testEditor = editormd();
+    });
+</script> -->
 {% endblock %}

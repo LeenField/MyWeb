@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>登录</h3>
-<form method="POST">
-    <input class="user-form" type="text" placeholder="用户名(由4~8数字或字母组成)" name="username" required>
-    <input class="user-form" type="password" placeholder="密码(由6~20位数字或者字母组成)" name="passport"  required>
-    <input class="btn user-form" type="submit" name="提交" value="登录">
+<link rel="stylesheet" href="../static/css/article_add.css" />
+<form name="Login" method="POST" id="Login" style="text-align: center;">
+    <h3>登录</h3>
+    <input class="user-form" type="text" placeholder="用户名(由4~8数字或字母组成)"
+        style="width: 200px" name="username" required>
+    <input class="user-form" type="password" placeholder="密码(由6~20位数字或者字母组成)"
+        style="width: 200px;" name="passport"  required>
+    <input class="user-form" style="width: 80px;" type="submit" name="submit" value="登录">
 </form>
 {% endblock %}
