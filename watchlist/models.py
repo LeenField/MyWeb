@@ -29,10 +29,12 @@ class User(db.Model, UserMixin):  # 默认表名将会是 user（自动生成，
     username = db.Column(db.String(20))  # 用户名
     password_hash = db.Column(db.String(128))  # 密码散列值
 
-    articles = relationship("Article", back_populates="user")
-    comments = relationship("Comment", back_populates="user")
+    # 改用 backref 引用
+    # articles = relationship("Article", back_populates="user",
+    #                         cascade='save-update, delete', single_parent=True)
+    # comments = relationship("Comment", back_populates="user", 
+    #                         cascade='save-update, delete', single_parent=True)
     
-
     def set_password(self, password):  # 用来设置密码的方法，接受密码作为参数
         self.password_hash = generate_password_hash(password)  # 将生成的密码保持到对应字段
 
@@ -66,10 +68,17 @@ class Article(db.Model):
     # 多对一 子表外键
     user_id = db.Column(db.Integer, ForeignKey('users.id'))
     is_draft = db.Column(db.Boolean, default=False)
-    
-    comments = relationship("Comment", back_populates="article")
+    # 一对多： 一的一方通过relationship关联到多的一方，多的一方设置ForeignKey关联到一的一方
+    author = relationship("User", backref=backref("Article", 
+                        cascade='save-update, delete, delete-orphan'), 
+                            cascade='save-update', single_parent=True)
 
-    user = relationship("User", back_populates="articles")
+    # comments = relationship("Comment", back_populates="article", 
+    #                         cascade='save-update, delete', single_parent=True)
+
+    # user = relationship("User", back_populates="articles", 
+    #                     cascade='save-update, delete, delete-orphan')
+
     # "tag" 为 Article_Has_Tag 的属性可以二阶映射, 这里直接Article.tags()得到映射的Tag
     # tags = association_proxy('article_has_tags', "tag", creator=_tag_find_or_create)
     tags = association_proxy('article_has_tags', "tag")
@@ -85,24 +94,46 @@ class Comment(db.Model):
     __tablename__ = "comments"
     __table_args__ = {'mysql_charset' : 'utf8mb4'}   # 支持表情emoji
     id_comment = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    # 外键
+    # 外键, 删除用户/文章 同时删去对应的评论
     id_user = db.Column(db.Integer, ForeignKey('users.id'))
-    user = relationship("User", back_populates="comments")
+    author = relationship("User", backref=backref("Comment", 
+                        cascade='save-update, delete, delete-orphan'), 
+                            cascade='save-update', single_parent=True)
+    # user = relationship("User", back_populates="comments", 
+    #                     cascade='save-update, delete, delete-orphan')
 
     id_article = db.Column(db.Integer, ForeignKey('articles.id_article'))
-    article = relationship("Article", back_populates="comments")
+    article = relationship("Article", backref=backref("Comment", 
+                        cascade='save-update, delete, delete-orphan'), 
+                            cascade='save-update', single_parent=True)
+    # article = relationship("Article", back_populates="comments", 
+    #                     cascade='save-update, delete, delete-orphan')
 
     content = db.Column(db.String(200), nullable=False, comment="评论内容")
     create_time = db.Column(db.DateTime, default=func.now(), comment="创建评论时间")
 
 class Article_Has_Tag(db.Model):
     __tablename__ = "article_has_tags"
-    id_article = db.Column(db.Integer, ForeignKey("articles.id_article"), primary_key=True)
-    id_tag = db.Column(db.Integer, ForeignKey("tags.id_tag"), primary_key=True)
-    # 引用文章 删除孤儿模式
-    article = relationship(Article, backref=backref("article_has_tags", cascade="all, delete-orphan"))
+    # 外键， 删除文章/标签 同时删除本表关联内容
+    id_article = db.Column(db.Integer, 
+                            ForeignKey("articles.id_article"), 
+                            primary_key=True)
+                            
+    id_tag = db.Column(db.Integer, 
+                        ForeignKey("tags.id_tag"), 
+                        primary_key=True)
+                        
+                        
+    # 引用文章 删除, 孤儿模式(被父表接触关系 自己也删除了)
+    article = relationship("Article", 
+                        backref=backref("article_has_tags", 
+                                        cascade="all"),
+                                        cascade='save-update', single_parent=True)
     # 引用标签对象
-    tag = relationship("Tag")
+    tag = relationship("Tag", 
+                        backref=backref('article_has_tags',
+                                        cascade='save-update, delete, delete-orphan'), 
+                                        cascade='save-update', single_parent=True)
     # article.tag.append(Tag(), Tag())
     # def __init__(self, tag=None, article=None):
     #     self.article = article
