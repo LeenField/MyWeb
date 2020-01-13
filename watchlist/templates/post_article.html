@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="../static/editormd/css/editormd.css" />
 <link rel="stylesheet" href="../static/editormd/examples/css/style.css" />
 <link rel="stylesheet" href="../static/css/article_add.css" />
+<link rel="stylesheet" href="../static/css/article_post.css" />
 
 <script src=" ../static/editormd/examples/js/jquery.min.js"> </script> 
 <script src="../static/editormd/lib/flowchart.min.js"></script>
@@ -46,6 +47,23 @@
 </div>
 <div class="content" id="fancy-content">
     {{ article.content_html| safe}}
+</div>
+
+<div class="comment-add">						
+     <div class="commentguest">
+           <img src="../static/images/head_photo.png" class="img-circle">
+     </div>
+     <div id="comment-input" class="comment-input">
+	   <div class="commentarea">
+             <textarea  id="content" rows="6" cols="80" 
+                onpropertychange="if(this.scrollHeight> 80)this.style.posHeight=this.scrollHeight+5" 
+                placeholder="一起分享你的思考"></textarea>
+           </div>									
+	   <div class="commentbtn">
+		 <div class="commentmask"></div>
+		 <a href="javascript:;" class="getcomment btn btn-block" role="button">评论</a>
+           </div>
+      </div>
 </div>
 
 <!-- 文章渲染 -->
