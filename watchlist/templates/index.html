@@ -59,7 +59,8 @@
         <a href="{{ url_for('.post', idx=article.id_article) }}">
             Click To Read More...
         </a></small>
-    <!-- 问章列表渲染 -->
+        
+    <!-- 文章列表渲染 -->
     <script>
         var mdToHTML;
         mdToHTML = editormd.markdownToHTML("fancy-content-{{ loop.index }}", {

@@ -19,7 +19,7 @@
     </div>
     <div>
         <h2 style="display: inline; margin-right: 45px;">标签</h2>
-        {% for tag in candicate_tags.tags %}
+        {% for tag in candidate_tags.tags %}
         {% if tag in article.tags %}
         <input name="{{ tag.tag_name }}" checked=true type="checkbox" id="check{{ loop.index }}" />
         {% else %}
