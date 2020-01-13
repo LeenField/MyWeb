@@ -26,8 +26,15 @@ app.config['SECRET_KEY'] = 'dev'  # 等同于 app.secret_key = 'dev'   浏览器
 # app.config['SQLALCHEMY_DATABASE_URI'] = prefix + \
 #     os.path.join(app.root_path, 'data.db')
 
+# 数据库信息
+host = 'cdb-gfobj32i.cd.tencentcdb.com'
+port = '10034'
+database = 'MyCMS?charset=utf8mb4'
+username = 'root'
+password = '22350622SUN'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@127.0.0.1:3306/watch_list_2'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:22350622SUN@cdb-gfobj32i.cd.tencentcdb.com:10034/MyCMS?charset=utf8mb4'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:22350622SUN@cdb-gfobj32i.cd.tencentcdb.com:10034/MyCMS?charset=utf8mb4'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的监控
 # 在扩展类实例化前加载配置
