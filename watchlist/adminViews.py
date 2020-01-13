@@ -1,4 +1,4 @@
-from watchlist.models import User, Movie, PostForm, Article, Tag, Article_Has_Tag
+from watchlist.models import User, Movie, PostForm, Article, Tag, Article_Has_Tag, Comment
 from flask import Flask, render_template, url_for, flash, request, redirect, Response, jsonify
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
 import re, os, datetime
@@ -41,7 +41,8 @@ class UserView(BaseModelView):
 # admin.add_view(AdminView(name=u'Hello'))
     # if current_user.username == "XieCK":
 # admin.add_view(UserView(User, db.session, name=u'信息', category=u'用户'))      # 用户模型
-admin.add_view(UserView(User, db.session, name=u'信息'))      # 用户模型
-admin.add_view(BaseModelView(Article, db.session))   # 文章模型
-admin.add_view(BaseModelView(Tag, db.session))       # 标签模型
-admin.add_view(BaseModelView(Article_Has_Tag, db.session))   # 文章X标签模型
+admin.add_view(UserView(User, db.session, name=u'用户'))      # 用户模型
+admin.add_view(BaseModelView(Article, db.session, name=u'文章'))   # 文章模型
+admin.add_view(BaseModelView(Tag, db.session, name=u'文章标签'))       # 标签模型
+admin.add_view(BaseModelView(Article_Has_Tag, db.session, name='文章/标签关联表'))   # 文章X标签模型
+admin.add_view(BaseModelView(Comment, db.session, name='评论'))
