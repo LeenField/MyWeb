@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
-from sqlalchemy import func, ForeignKey
+from sqlalchemy import func, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship, backref
 from flask_admin import BaseView
 from flask_admin.contrib.sqla import ModelView
@@ -60,9 +60,10 @@ class Article(db.Model):
     title = db.Column(db.String(214), nullable=False)
     hits = db.Column(db.Integer, default=0, comment="点击量")
     brief = db.Column(db.String(500), default="", comment="文章简介")
-    create_time = db.Column(db.DateTime, server_default=func.now(), comment="创建时间")
+    # create_time = db.Column(db.DateTime, server_default=func.now(), comment="创建时间")
     # update_time = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), comment="更新时间")
-    update_time = db.Column(db.DateTime, server_default=func.now(), comment="更新时间")
+    # update_time = db.Column(db.DateTime, server_default=func.now(), comment="更新时间")
+    update_time = db.Column(TIMESTAMP, nullable=False, comment="更新时间")
     content = db.Column(db.Text, nullable=False, comment="文章内容")
     content_html = db.Column(db.Text, comment="md渲染为HTML")
     # 多对一 子表外键

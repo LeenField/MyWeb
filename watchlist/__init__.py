@@ -27,8 +27,8 @@ app.config['SECRET_KEY'] = 'dev'  # 等同于 app.secret_key = 'dev'   浏览器
 #     os.path.join(app.root_path, 'data.db')
 
 # 数据库信息
-host = 'cdb-gfobj32i.cd.tencentcdb.com'
-port = '10034'
+host = 'verygoodstyle.cn'
+port = '3306'
 database = 'MyCMS?charset=utf8mb4'
 username = 'root'
 password = '22350622SUN'
