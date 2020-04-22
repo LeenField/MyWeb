@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="../static/css/article_add.css" />
+<link rel="stylesheet" href="../static/css/article_list.css" />
+
+
+<form name="Login" method="POST" id="Login" style="text-align: center;">
+    <h3>拼音输入法</h3>
+    <h5>支持全声母（准确率极低），给个面子：尽量输入<font color='red'>全部完整拼音</font></h5>
+    <h5>本次加载HMM模型耗时<font color='purple'>{{ load_time }}</font></h5> 
+    <input class="input-form" type="text" placeholder="请输入拼音，以空格隔开"
+        style="width: 800px" name="sentence" required>
+    <input class="input-form" style="width: 80px;" type="submit" name="submit" value="预测">
+    <!-- <input class="input-form" style="width: 80px;" type="submit" name="submit" value="清空"> -->
+</form>
+{% for (word, prob) in best_list %}
+<div id="word-prob-{{ loop.index }}" style="padding: 2px 5px; border-radius: 3px; text-align: center;">
+    <h4>The top <font color='blue'>{{ loop.index }}</font> word is <font color='blue'>{{ word }}</font>, its probability is {{ prob }}.</h4>
+</div>
+{% endfor %}
+{% endblock %}

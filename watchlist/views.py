@@ -7,6 +7,7 @@ from watchlist import app, db, admin
 from werkzeug.routing import  BaseConverter
 csrf = CSRFProtect()   # 惰性加载
 from flask_admin import Admin, BaseView, expose
+from .HMM_IME.predict import predicter
 
 from werkzeug.routing import BaseConverter
 
@@ -53,6 +54,18 @@ def logout():
     flash('我爱你，再见')
     logout_user()  # 登出用户
     return redirect(url_for('index'))  # 重定向回首页
+
+@app.route('/IME', methods=['GET', 'POST'])
+def IME():
+    HMM_predict = predicter()
+    best_list = [ ]
+    if request.method == "POST":
+        sentence = request.form['sentence']
+        sentence_list = ["START"] + sentence.strip(' ').split(" ") + ["END"]
+        print(sentence_list)
+        best_list = HMM_predict.predict(sentence_list)
+        print(best_list)
+    return render_template("IME.html", best_list = best_list, load_time = HMM_predict.load_model_time)
 
 # 删除视图
 @app.route('/movie/delete/<int:movie_id>', methods=['POST'])
