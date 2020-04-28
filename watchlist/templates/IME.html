@@ -1,22 +1,86 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="../static/css/article_add.css" />
 <link rel="stylesheet" href="../static/css/article_list.css" />
 
 
-<form name="Login" method="POST" id="Login" style="text-align: center;">
+<div id="Login" style="text-align: center;">
     <h3>拼音输入法</h3>
     <!-- <h5>支持全声母（准确率极低），给个面子：尽量输入<font color='red'>全部完整拼音</font></h5> -->
-    <h5>本次加载HMM模型耗时<font color='purple'>{{ load_time }}</font>s</h5> 
-    <input class="input-form" type="text" placeholder="请输入拼音，以空格隔开，示例：ni hao sao ya"
-        style="width: 800px" name="sentence" required>
-    <input class="input-form" style="width: 80px;" type="submit" name="submit" value="预测">
+    <h5>本次加载HMM模型耗时<font color='purple'>{{ load_time }}</font>s</h5>
+    <input class="input-form txt" type="text" placeholder="请输入拼音，以空格隔开，示例：ni hao sao ya" style="width: 800px"
+        name="sentence" required οnkeypress="if(event.keyCode==13) console.log("FFF");">
+    <input class=" input-form prebtn" style="width: 80px;" type="button" value="预测">
+    <input class="input-form clearbtn" style="width: 80px;" type="button" value="清空">
     <!-- <input class="input-form" style="width: 80px;" type="submit" name="submit" value="清空"> -->
-</form>
+</div>
+<!-- 
 {% for (word, prob) in best_list %}
 <div id="word-prob-{{ loop.index }}" style="padding: 2px 5px; border-radius: 3px; text-align: center;">
-    <h4>The top <font color='blue'>{{ loop.index }}</font> word is <font color='blue'>{{ word }}</font>, its probability is {{ prob }}.</h4>
+    <h4>The top <font color='blue'>{{ loop.index }}</font> word is <font color='blue'>{{ word }}</font>, its probability
+        is {{ prob }}.</h4>
 </div>
-{% endfor %}
+{% endfor %} -->
+
+<div class="result_list">
+</div>
+
+
+<script type="text/javascript">
+
+    $(window).keydown(function (e) {
+        var key = window.event ? e.keyCode : e.which;
+        if (key.toString()[-1] == "13") {
+            console.log("test 2!");
+            $(".prebtn").click();
+        }
+    });
+    //搜索结果局部刷新	
+    $(function () {
+        // 绑定回车键   
+
+        $('.txt').keydown(function (event) {
+            if (event.keyCode == 13) {
+                console.log("test!");
+                $(".prebtn").click();
+            }
+        });
+
+        $('.prebtn').click(function () {
+            var word = $('.txt').val();
+            var data = {
+                data: JSON.stringify({
+                    'sentence': word,
+                }),
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('.IME_POST') }}",
+                data: data,  // 这个data是要post的数据
+                success: function (beat_list) {  // 这个data是接收到的响应的实体
+                    $('.result_list .item').remove();
+                    console.log(beat_list["best_list"]);
+                    $.each(beat_list['best_list'], function (index, item) {
+                        $(".result_list").append(
+                            "<div class='item' style='padding: 2px 5px; border-radius: 3px; text-align: center;'>" +
+                            "<h4>The top <font color='blue'>" + index + "</font> word is <font color='blue'>" +
+                            item[0] + "</font>, its probability is " + item[1] + ".</h4></div>"
+                        );
+                    });
+                    // $('.result').val(data['youdao']);
+                }
+            });
+        });
+    });
+
+    //点击清空输入框
+    $('.clearbtn').on('click', function () {
+        // $('.result').html('');
+        $('.txt').val('');
+    })
+</script>
+
 {% endblock %}
