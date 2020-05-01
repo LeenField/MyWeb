@@ -10,9 +10,8 @@
     <h3>拼音输入法</h3>
     <!-- <h5>支持全声母（准确率极低），给个面子：尽量输入<font color='red'>全部完整拼音</font></h5> -->
     <h5>本次加载HMM模型耗时<font color='purple'>{{ load_time }}</font>s</h5>
-    <input class="input-form txt" type="text" placeholder="请输入拼音，需要手动分词请用'号隔开" style="width: 800px"
-        name="sentence" required 
-        onkeyup="if(event.keyCode != 222) PinyinDivide();">
+    <input class="input-form txt" type="text" placeholder="请输入拼音，需要手动分词请用'号隔开" style="width: 800px" name="sentence"
+        required onkeyup="if(event.keyCode != 222) PinyinDivide();">
     <input class=" input-form prebtn" style="width: 80px;" type="button" value="预测">
     <input class="input-form clearbtn" style="width: 80px;" type="button" value="清空">
     <!-- <input class="input-form" style="width: 80px;" type="submit" name="submit" value="清空"> -->
@@ -37,29 +36,38 @@
 
         var resArray = new Array();
         var py;
+        // 客户手动分词的需要使用 ' 号区分
         var strArray = str.split("\'");
         for (i = 0; i < strArray.length; i++) {
             // /pat/g match返回的是所有匹配的内容，正则没有g简化返回的格式时，使用match()返回的信息比较多。
             // 但是有g后，就没有关键的信息index了。
             // 而exec方法就能解决这个问题，它能接着上一次匹配后继续匹配，搭配while循环
-            var pat = /[jqlyx]u[en]|kun|hun|nue|er|[^aoeiuv]?h?[iv]?(ai|ei|ao|ou|ang?|eng?|ong|on?|a|o?|e|i|u|ng|n)?/g;
-            while (py = pat.exec(strArray[i])) {
+            //var pat = /[jqlyx]u[en(an)]|[kh]u[n(an)(ang)]|nue|[lrknzcd]uo|er|[^aoeiuv]?h?[iv]?(ai|ei|ao|ou|ang?|eng?|ong|on?|a|o?|e|i|u|ng|ing?)?/g;
+            // var pat = /(a)|(ai)|(an)|(ang)|(ao)|(ba)|(bai)|(ban)|(bang)|(bao)|(bei)|(ben)|(beng)|(bi)|(bian)|(biao)|(bie)|(bin)|(bing)|(bo)|(bu)|(ca)|(cai)|(can)|(cang)|(cao)|(ce)|(ceng)|(ci)|(cong)|(cou)|(cu)|(cuan)|(cui)|(cun)|(cuo)|(cha)|(chai)|(chan)|(chang)|(chao)|(che)|(chen)|(cheng)|(chi)|(chong)|(chou)|(chu)|(chuai)|(chuan)|(chuang)|(chui)|(chun)|(chuo)|(da)|(dai)|(dan)|(dang)|(dao)|(de)|(deng)|(di)|(dian)|(diao)|(die)|(ding)|(diu)|(dong)|(dou)|(du)|(duan)|(dui)|(dun)|(duo)|(e)|(en)|(er)|(fa)|(fan)|(fang)|(fei)|(fen)|(feng)|(fo)|(fou)|(fu)|(ga)|(gai)|(gan)|(gang)|(gao)|(ge)|(gei)|(gen)|(geng)|(gong)|(gou)|(gu)|(gua)|(guai)|(guan)|(guang)|(gui)|(gun)|(guo)|(ha)|(hai)|(han)|(hang)|(hao)|(he)|(hei)|(hen)|(heng)|(hong)|(hou)|(hu)|(hua)|(huai)|(huan)|(huang)|(hui)|(hun)|(huo)|(ji)|(jia)|(jian)|(jiang)|(jiao)|(jie)|(jin)|(jing)|(jiong)|(jiu)|(ju)|(juan)|(jue)|(jun)|(ka)|(kai)|(kao)|(kan)|(kang)|(ke)|(ken)|(keng)|(kong)|(kou)|(ku)|(kua)|(kuai)|(kuan)|(kuang)|(kui)|(kun)|(kuo)|(la)|(lai)|(lan)|(lang)|(lao)|(le)|(lei)|(leng)|(li)|(lian)|(liang)|(liao)|(lie)|(lin)|(ling)|(liu)|(lo)|(long)|(lou)|(lu)|(luan)|(lun)|(luo)|(lü)|(lüe)|(ma)|(mai)|(mao)|(man)|(mang)|(me)|(mei)|(men)|(meng)|(mi)|(miao)|(mian)|(mie)|(min)|(ming)|(miu)|(mo)|(mou)|(mu)|(na)|(nai)|(nao)|(nan)|(nang)|(ne)|(nei)|(nen)|(neng)|(ni)|(nian)|(niang)|(niao)|(nie)|(nin)|(ning)|(niu)|(nou)|(nong)|(nu)|(nuan)|(nuo)|(nü)|(nüe)|(o)|(ou)|(pa)|(pai)|(pao)|(pan)|(pang)|(pei)|(pen)|(peng)|(pi)|(piao)|(pian)|(pie)|(pin)|(ping)|(po)|(pou)|(pu)|(qi)|(qia)|(qiao)|(qian)|(qiang)|(qie)|(qin)|(qing)|(qiong)|(qiu)|(qu)|(quan)|(que)|(qun)|(ran)|(rang)|(rao)|(re)|(ren)|(reng)|(ri)|(rong)|(rou)|(ru)|(ruan)|(rui)|(run)|(ruo)|(sa)|(sai)|(san)|(sang)|(sao)|(se)|(sen)|(seng)|(si)|(song)|(sou)|(su)|(suan)|(sui)|(sun)|(suo)|(sha)|(shai)|(shan)|(shang)|(shao)|(she)|(shei)|(shen)|(sheng)|(shi)|(shou)|(shu)|(shua)|(shuai)|(shuan)|(shuang)|(shui)|(shun)|(shuo)|(ta)|(tai)|(tan)|(tang)|(tao)|(te)|(teng)|(ti)|(tian)|(tiao)|(tie)|(ting)|(tong)|(tou)|(tu)|(tuan)|(tui)|(tun)|(tuo)|(wa)|(wai)|(wan)|(wang)|(wei)|(wen)|(weng)|(wo)|(wu)|(xi)|(xia)|(xian)|(xiang)|(xiao)|(xie)|(xin)|(xing)|(xiong)|(xiu)|(xu)|(xuan)|(xue)|(xun)|(ya)|(yan)|(yang)|(yao)|(ye)|(yi)|(yin)|(ying)|(yo)|(yong)|(you)|(yu)|(yuan)|(yue)|(yun)|(za)|(zai)|(zan)|(zang)|(zao)|(ze)|(zei)|(zen)|(zeng)|(zi)|(zong)|(zou)|(zu)|(zuan)|(zui)|(zun)|(zuo)|(zha)|(zhai)|(zhan)|(zhang)|(zhao)|(zhe)|(zhei)|(zhen)|(zheng)|(zhi)|(zhong)|(zhou)|(zhu)|(zhua)|(zhuai)|(zhuan)|(zhuang)|(zhui)|(zhun)|(zhuo)|(lv)|(lue)|(nv)|(nue)|(sh)|(d)|(y)|(z)|(l)|(x)|(t)|(q)|(zh)|(b)|(j)|(p)|(f)|(w)|(h)|(g)|(k)|(n)|(m)|(ch)|(r)|(c)|(s)/g;
+            // 暴力正则表达式， 由于 | 号的优先级最低，而且按照顺序匹配，所以按照长度排序
+            var pat = /chuang|shuang|zhuang|chang|cheng|chong|chuai|chuan|guang|huang|jiang|jiong|kuang|liang|niang|qiang|qiong|shang|sheng|shuai|shuan|xiang|xiong|zhang|zheng|zhong|zhuai|zhuan|bang|beng|bian|biao|bing|cang|ceng|cong|cuan|chai|chan|chao|chen|chou|chui|chun|chuo|dang|deng|dian|diao|ding|dong|duan|fang|feng|gang|geng|gong|guai|guan|hang|heng|hong|huai|huan|jian|jiao|jing|juan|kang|keng|kong|kuai|kuan|lang|leng|lian|liao|ling|long|luan|mang|meng|miao|mian|ming|nang|neng|nian|niao|ning|nong|nuan|pang|peng|piao|pian|ping|qiao|qian|qing|quan|rang|reng|rong|ruan|sang|seng|song|suan|shai|shan|shao|shei|shen|shou|shua|shui|shun|shuo|tang|teng|tian|tiao|ting|tong|tuan|wang|weng|xian|xiao|xing|xuan|yang|ying|yong|yuan|zang|zeng|zong|zuan|zhai|zhan|zhao|zhei|zhen|zhou|zhua|zhui|zhun|zhuo|ang|bai|ban|bao|bei|ben|bie|bin|cai|can|cao|cou|cui|cun|cuo|cha|che|chi|chu|dai|dan|dao|die|diu|dou|dui|dun|duo|fan|fei|fen|fou|gai|gan|gao|gei|gen|gou|gua|gui|gun|guo|hai|han|hao|hei|hen|hou|hua|hui|hun|huo|jia|jie|jin|jiu|jue|jun|kai|kao|kan|ken|kou|kua|kui|kun|kuo|lai|lan|lao|lei|lie|lin|liu|lou|lun|luo|lüe|mai|mao|man|mei|men|mie|min|miu|mou|nai|nao|nan|nei|nen|nie|nin|niu|nou|nuo|nüe|pai|pao|pan|pei|pen|pie|pin|pou|qia|qie|qin|qiu|que|qun|ran|rao|ren|rou|rui|run|ruo|sai|san|sao|sen|sou|sui|sun|suo|sha|she|shi|shu|tai|tan|tao|tie|tou|tui|tun|tuo|wai|wan|wei|wen|xia|xie|xin|xiu|xue|xun|yan|yao|yin|you|yue|yun|zai|zan|zao|zei|zen|zou|zui|zun|zuo|zha|zhe|zhi|zhu|lue|nue|ai|an|ao|ba|bi|bo|bu|ca|ce|ci|cu|da|de|di|du|en|er|fa|fo|fu|ga|ge|gu|ha|he|hu|ji|ju|ka|ke|ku|la|le|li|lo|lu|lü|ma|me|mi|mo|mu|na|ne|ni|nu|nü|ou|pa|pi|po|pu|qi|qu|re|ri|ru|sa|se|si|su|ta|te|ti|tu|wa|wo|wu|xi|xu|ya|ye|yi|yo|yu|za|ze|zi|zu|lv|nv|sh|zh|ch|a|e|o|d|y|z|l|x|t|q|b|j|p|f|w|h|g|k|n|m|r|c|s/g;
+            var destStr = strArray[i].replace(/,/g, "");
+        //    当前自动分词段重新匹配，避免出现 dian 和 cong这样的拼音
+            var tempArray = new Array();
+            while (py = pat.exec(destStr)) {
                 if (py[0] == "") {
                     break;
                 }
                 //特殊情况 卷舌翘舌
-                if (py[0].length == 2 && py[0][1] == "h" && py[0] != "zh" && py[0] != "sh" && py[0] != "ch") {
-                    for (j = 0; j < py[0].length; j++) {
-                        resArray.push(py[0][j]);
-                    }
-                }
-                else {
-                    resArray.push(py[0]);
-                }
+                // if (py[0].length == 2 && py[0][1] == "h" && py[0] != "zh" && py[0] != "sh" && py[0] != "ch") {
+                //     for (j = 0; j < py[0].length; j++) {
+                //         tempArray.push(py[0][j]);
+                //     }
+                // }
+                // else {
+                    tempArray.push(py[0]);
+                // }
                 console.log(py, pat.lastIndex);
             }
+            // 我们机器分词的使用 , 符号
+            resArray.push(tempArray.join(','));
         }
-        $(".txt").val( resArray.join("\'") );
+        $(".txt").val(resArray.join("\'"));
     }
 
     //搜索结果局部刷新	
@@ -74,6 +82,8 @@
 
         $('.prebtn').click(function () {
             var word = $('.txt').val();
+            word = word.replace(/,/g, "\'");
+            console.log(word);
             var data = {
                 data: JSON.stringify({
                     'sentence': word,
