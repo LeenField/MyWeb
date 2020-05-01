@@ -70,8 +70,8 @@ def IME_POST():
     HMM_predict = predicter()
     data = json.loads(request.form.get('data'))
     sentence = data['sentence'] 
-
-    sentence_list = ["START"] + sentence.strip(' ').split(" ") + ["END"]
+    # 现在是以 ' 隔开的拼音了
+    sentence_list = ["START"] + sentence.strip(' ').split("'") + ["END"]
     print(sentence_list)
     best_list = HMM_predict.predict(sentence_list)
     print(best_list)
