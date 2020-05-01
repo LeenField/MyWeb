@@ -215,7 +215,6 @@ def login():
     return render_template("login.html")
 
 @app.route('/article/<int:idx>', methods=['GET'])
-@login_required
 def post(idx):
     article = Article.query \
         .filter_by(id_article = idx).first()
