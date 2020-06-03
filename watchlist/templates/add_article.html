@@ -5,8 +5,9 @@
 <link rel="stylesheet" href="../static/editormd/examples/css/style.css" />
 <link rel="stylesheet" href="../static/css/article_add.css" />
  
-<script src=" ../static/editormd/examples/js/jquery.min.js"> </script> 
-<script src="../static/editormd/editormd.js"></script>
+<!-- <script src=" ../static/editormd/examples/js/jquery.min.js"> </script>  -->
+<!-- <script src="../static/editormd/editormd.js"></script> -->
+<script src="{{ url_for('static', filename='editormd/editormd.js') }}"></script>
 
 <form method="POST" action="{{ url_for("article_add")}} ">
     {{ form.csrftoken }}
