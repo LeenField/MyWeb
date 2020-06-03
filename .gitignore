@@ -7,3 +7,9 @@ __pycache__
 *.sql
 .vscode/extensions.json
 .vscode/launch.json
+
+uwsgi.log
+uwsgi.pid
+wsgi.py
+env/
+yum

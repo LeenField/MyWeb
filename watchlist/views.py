@@ -1,12 +1,13 @@
 from watchlist.models import User, Movie, PostForm, Article, Tag, Article_Has_Tag
-from flask import Flask, render_template, url_for, flash, request, redirect, Response, jsonify
+from flask import Flask, render_template, url_for, flash, request, redirect, Response, jsonify, session
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user, logout_user
-import re, os, datetime
+import re, os, datetime, json
 from flask_wtf.csrf import CSRFProtect
 from watchlist import app, db, admin
 from werkzeug.routing import  BaseConverter
 csrf = CSRFProtect()   # 惰性加载
 from flask_admin import Admin, BaseView, expose
+from .HMM_IME.predict import predicter
 
 from werkzeug.routing import BaseConverter
 
@@ -53,6 +54,30 @@ def logout():
     flash('我爱你，再见')
     logout_user()  # 登出用户
     return redirect(url_for('index'))  # 重定向回首页
+
+@app.route('/IME', methods=['GET'])
+def IME_GET():
+    # 放在session:用户会话,用来记住请求(比如前后一个GET请求和一个POST请求)之间的值,从数据格式上来说它是字典类型。
+    # 它存在于连接到服务器的每个客户端中，属于私有存储，会保存在客户端的cookie中。
+    # session['HMM_predict'] = json.dumps( predicter() )
+    HMM_predict = predicter()
+    best_list = [ ]
+    return render_template("IME.html", best_list = best_list, load_time = HMM_predict.load_model_time)
+
+@app.route('/IME', methods=['POST'])
+def IME_POST():
+    # sentence = request.form['sentence']
+    HMM_predict = predicter()
+    data = json.loads(request.form.get('data'))
+    sentence = data['sentence'] 
+    # 现在是以 ' 隔开的拼音了
+    sentence_list = ["START"] + sentence.strip(' ').split("'") + ["END"]
+    print(sentence_list)
+    best_list = HMM_predict.predict(sentence_list)
+    print(best_list)
+    # r = {"list": best_list}
+    # result = r.json()           
+    return jsonify(best_list=best_list)
 
 # 删除视图
 @app.route('/movie/delete/<int:movie_id>', methods=['POST'])
@@ -190,7 +215,6 @@ def login():
     return render_template("login.html")
 
 @app.route('/article/<int:idx>', methods=['GET'])
-@login_required
 def post(idx):
     article = Article.query \
         .filter_by(id_article = idx).first()
@@ -274,7 +298,6 @@ def edit_article(idx):
     return render_template("edit_article.html", form=form, idx=idx, article=article)
 
 @app.route('/', methods=["GET", "POST"])
-@login_required
 def index():
     # articles = User.query.first()
     page = int(request.args.get('page', 1))
@@ -283,9 +306,9 @@ def index():
 
     user = current_user._get_current_object()
     if selected_tag == 0:
-        # 按更新时间倒序排列
+        # 按更新时间倒序排列，我设置了不需要登录，不需要 filter_by() user_id
+            # .filter_by(user_id=user.id) \
         paginates = Article.query \
-            .filter_by(user_id=user.id) \
             .order_by(Article.update_time.desc()) \
             .paginate(page, per_page, error_out = False)
     else: 
@@ -294,8 +317,9 @@ def index():
             .filter_by(id_tag = selected_tag)\
             .all()
         article_list = [article[0] for article in article_list]
+        
+        # .filter_by(user_id=user.id) \
         paginates = Article.query \
-            .filter_by(user_id=user.id) \
             .filter(Article.id_article.in_(article_list) ) \
             .order_by(Article.update_time.desc()) \
             .paginate(page, per_page, error_out = False)
